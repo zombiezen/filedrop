@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html ng-app="FileDropApp">
+  <head>
+    <title>FileDrop</title>
+    <link rel="stylesheet" href="/bundle.css">
+  </head>
+  <body ng-controller="Controller as ctrl">
+    <div layout="column" layout-fill class="filedrop-backdrop">
+      <md-toolbar layout="row" layout-padding class="md-whiteframe-z1" md-scroll-shrink>
+        <h1 class="md-headline">FileDrop</h1>
+      </md-toolbar>
+      <div
+          layout="row" layout-align="center" layout-padding flex
+          ng-cloak
+          filedrop-drop="ctrl.dropFile($event.dataTransfer.files)">
+        <div
+            flex flex-gt-sm="60" flex-gt-lg="50"
+            ng-class="{'filedrop-maincard': ctrl.listState() == 'hasData' || ctrl.listState() == 'load'}">
+          <div ng-show="ctrl.listState() == 'empty'">
+            <p class="filedrop-heroiconblock">
+              <md-icon md-svg-icon="file:ic_cloud_upload_24px" class="filedrop-heroicon"></md-icon>
+            </p>
+            <h2>Get Started</h2>
+            <p>Upload some files by dropping them here or by clicking the upload button below.</p>
+          </div>
+          <p ng-show="ctrl.listState() == 'load'">Loading&hellip;</p>
+          <div ng-show="ctrl.listState() == 'fail'">
+            <p class="filedrop-heroiconblock">
+              <md-icon md-svg-icon="file:ic_cloud_off_24px" class="filedrop-heroicon"></md-icon>
+            </p>
+            <p>List of files unavailable.  <a href="#" ng-click="ctrl.refresh()">Retry</a></p>
+          </div>
+          <md-content ng-show="ctrl.listState() == 'hasData'">
+            <md-list>
+              <md-list-item ng-repeat="f in ctrl.files">
+                <p ng-click="ctrl.downloadFile(f)">{{f.name}}</p>
+                <md-menu md-position-mode="target-right target">
+                  <md-button aria-label="Open file interactions menu" class="md-icon-button" ng-click="$mdOpenMenu()">
+                    <md-icon md-menu-origin md-svg-icon="navigation:ic_more_vert_24px"></md-icon>
+                  </md-button>
+                  <md-menu-content>
+                    <md-menu-item>
+                      <md-button ng-disabled="!ctrl.canRead()" ng-click="ctrl.downloadFile(f)">
+                        <md-icon md-svg-icon="file:ic_file_download_24px" md-menu-align-target></md-icon>
+                        Download
+                      </md-button>
+                    </md-menu-item>
+                    <md-menu-item>
+                      <md-button ng-disabled="!ctrl.canDelete()" ng-click="ctrl.deleteFile(f)">
+                        <md-icon md-svg-icon="action:ic_delete_24px"></md-icon>
+                        Delete
+                      </md-button>
+                    </md-menu-item>
+                  </md-menu-content>
+                </md-menu>
+              </md-list-item>
+            </md-list>
+          </md-content>
+        </div>
+      </div>
+    </div>
+    <md-button class="md-fab md-fab-bottom-right" ng-disabled="!ctrl.canWrite()" aria-label="Upload" ng-click="ctrl.upload()">
+      <md-icon md-svg-icon="file:ic_cloud_upload_24px"></md-icon>
+    </md-button>
+    <script>permissions = [[.Permissions]];</script>
+    <script src="/bundle.js"></script>
+  </body>
+</html>

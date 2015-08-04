@@ -1,0 +1,20 @@
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+}
+
+.filedrop-backdrop {
+  background: #fafafa;
+}
+
+.filedrop-maincard {
+  background: white;
+}
+
+.filedrop-heroiconblock {
+  text-align: center;
+}
+
+.filedrop-heroicon {
+  width: 64px;
+  height: 64px;
+}
