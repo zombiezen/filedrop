@@ -4,8 +4,6 @@ FileDrop is a small web-based file-sharing UI.  It can be used as a standalone
 server in trusted LANs, but it can optionally use [Sandstorm](sandstorm) for
 ACLs and sharing.
 
-This is not an official Google product.
-
 ## Dependencies
 
 FileDrop requires Go 1.4 to build.  Other dependencies are vendored in
@@ -39,5 +37,12 @@ curl -T bar.txt http://localhost:8080/file/
 
 If you're using Sandstorm web keys, remember to use `-H 'Authorization: Bearer
 TOKEN` to authorize the request.
+
+## License
+
+Apache License 2.0.  See LICENSE for details.
+
+This is not an official Google product (experimental or otherwise), it is just
+code that happens to be owned by Google.
 
 [sandstorm]: https://sandstorm.io/
