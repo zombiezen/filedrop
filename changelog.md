@@ -1,6 +1,7 @@
 # 1.0.2
 
-* Fixed issue #2
+* Fixed [issue #1](https://github.com/zombiezen/filedrop/issues/1)
+* Fixed [issue #2](https://github.com/zombiezen/filedrop/issues/2)
 * Updated angular-material to 0.10.1
 
 # 1.0.1

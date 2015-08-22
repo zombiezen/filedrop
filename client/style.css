@@ -34,3 +34,8 @@
   width: 64px;
   height: 64px;
 }
+
+/* Workaround for angular-material #3773 */
+.md-scroll-mask {
+  z-index: 0 !important;
+}
