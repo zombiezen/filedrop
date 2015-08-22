@@ -38,14 +38,14 @@ filedrop.Files = function($http, $window) {
  * @return {!angular.$q.Promise.<!Array.<!Object>>}
  */
 filedrop.Files.prototype.list = function() {
-  return this.http_.get('/file/').then(function(response) {
+  return this.http_.get('/file/').then(angular.bind(this, function(response) {
     var entries = response.data['entries'];
     for (var i = 0; i < entries.length; i++) {
       var e = entries[i];
       e['url'] = this.getFileUrl_(e['name']);
     }
     return entries;
-  });
+  }));
 };
 
 
