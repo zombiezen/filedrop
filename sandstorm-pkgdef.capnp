@@ -30,7 +30,7 @@ const pkgdef :Spk.PackageDefinition = (
   manifest = (
     appTitle = (defaultText = "FileDrop"),
 
-    appVersion = 1,  # Increment this for every release.
+    appVersion = 2,  # Increment this for every release.
 
     appMarketingVersion = (defaultText = "1.0.1"),
     # Human-readable representation of appVersion. Should match the way you
@@ -38,15 +38,32 @@ const pkgdef :Spk.PackageDefinition = (
 
     actions = [
       ( title = (defaultText = "New Drop"),
+        nounPhrase = (defaultText = "drop"),
         command = .myCommand
       )
     ],
 
-    continueCommand = .myCommand
+    continueCommand = .myCommand,
     # This is the command called to start your app back up after it has been
     # shut down for inactivity. Here we're using the same command as for
     # starting a new instance, but you could use different commands for each
     # case.
+
+    metadata = (
+      icons = (appGrid = (svg = embed "icon.svg")),
+      website = "https://github.com/zombiezen/filedrop/",
+      codeUrl = "https://github.com/zombiezen/filedrop/",
+      license = (openSource = apache2, notices = (defaultText = embed "LICENSE.all")),
+      categories = [productivity],
+      author = (
+        contactEmail = "ross@zombiezen.com",
+        pgpSignature = embed "pgp-signature"
+      ),
+      pgpKeyring = embed "keyring",
+      description = (defaultText = embed "description.md"),
+      screenshots = [(width = 1165, height = 780, png = embed "screenshot.png")],
+      changeLog = (defaultText = embed "changelog.md")
+    )
   ),
 
   sourceMap = (
