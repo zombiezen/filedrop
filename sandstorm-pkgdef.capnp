@@ -30,9 +30,9 @@ const pkgdef :Spk.PackageDefinition = (
   manifest = (
     appTitle = (defaultText = "FileDrop"),
 
-    appVersion = 3,  # Increment this for every release.
+    appVersion = 4,  # Increment this for every release.
 
-    appMarketingVersion = (defaultText = "1.0.2"),
+    appMarketingVersion = (defaultText = "1.0.3"),
     # Human-readable representation of appVersion. Should match the way you
     # identify versions of your app in documentation and marketing.
 
@@ -50,7 +50,12 @@ const pkgdef :Spk.PackageDefinition = (
     # case.
 
     metadata = (
-      icons = (appGrid = (svg = embed "icons/icon-128.svg")),
+      icons = (
+        appGrid = (svg = embed "icons/icon-128.svg"),
+        grain = (svg = embed "icons/icon-24.svg"),
+        market = (svg = embed "icons/icon-150.svg"),
+        marketBig = (svg = embed "icons/icon-300.svg"),
+      ),
       website = "https://github.com/zombiezen/filedrop/",
       codeUrl = "https://github.com/zombiezen/filedrop/",
       license = (openSource = apache2, notices = (defaultText = embed "LICENSE.all")),
