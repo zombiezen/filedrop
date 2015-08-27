@@ -50,7 +50,7 @@ const pkgdef :Spk.PackageDefinition = (
     # case.
 
     metadata = (
-      icons = (appGrid = (svg = embed "icon.svg")),
+      icons = (appGrid = (svg = embed "icons/icon-128.svg")),
       website = "https://github.com/zombiezen/filedrop/",
       codeUrl = "https://github.com/zombiezen/filedrop/",
       license = (openSource = apache2, notices = (defaultText = embed "LICENSE.all")),
