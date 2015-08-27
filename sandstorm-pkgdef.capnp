@@ -30,9 +30,9 @@ const pkgdef :Spk.PackageDefinition = (
   manifest = (
     appTitle = (defaultText = "FileDrop"),
 
-    appVersion = 4,  # Increment this for every release.
+    appVersion = 5,  # Increment this for every release.
 
-    appMarketingVersion = (defaultText = "1.0.3"),
+    appMarketingVersion = (defaultText = "1.0.4"),
     # Human-readable representation of appVersion. Should match the way you
     # identify versions of your app in documentation and marketing.
 
@@ -66,6 +66,7 @@ const pkgdef :Spk.PackageDefinition = (
       ),
       pgpKeyring = embed "keyring",
       description = (defaultText = embed "description.md"),
+      shortDescription = (defaultText = "Drag-n-drop file sharing"),
       screenshots = [(width = 1165, height = 780, png = embed "screenshot.png")],
       changeLog = (defaultText = embed "changelog.md")
     )
