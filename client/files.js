@@ -2,13 +2,13 @@
  * @license Apache-2.0
  *
  * Copyright 2015 Google Inc. All rights reserved.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,9 +27,11 @@ var filedrop = filedrop || {};
  * @constructor
  * @ngInject
  */
-filedrop.Files = function($http, $window) {
+filedrop.Files = function($http, $q, $window) {
   /** @private {!angular.$http} */
   this.http_ = $http;
+  /** @private {!angular.$http} */
+  this.q_ = $q;
   /** @private {!Array.<string>} */
   this.permissions_ = $window['permissions'];
 };
@@ -56,11 +58,48 @@ filedrop.Files.prototype.list = function() {
  */
 filedrop.Files.prototype.upload = function(file) {
   var url = this.getFileUrl_(file.name);
+
   return this.http_.put(url, file, {
     transformRequest: filedrop.Files.transformFile_
   }).then(function() {
     return {'name': file.name, 'url': url};
   });
+};
+
+/**
+ * Upload a list of files.
+ * @param {!FileList} files
+ * @return {!angular.$q.Promise.<!Object>} the created file objects
+ */
+filedrop.Files.prototype.uploadFiles = function(files) {
+  var d = this.q_.defer();
+  var uploaded = [];
+  var failed   = [];
+
+  var promises = [];
+  angular.forEach(files, angular.bind(this, function(f, idx) {
+    var fn = angular.bind(this, function() {
+      return this.upload(f).then(angular.bind(this, function(fobj) {
+        uploaded.push(fobj);
+      }), angular.bind(this, function(err) {
+        failed.push(f);
+      }));
+    });
+    promises.push(
+      fn()
+    );
+  }));
+
+  this.q_.all(promises).then(angular.bind(this, function() {
+    if (failed.length) {
+      d.reject({ uploaded: uploaded, failed: failed });
+    } else {
+      d.resolve({ uploaded: uploaded, failed: [] });
+    }
+  }));
+
+
+  return d.promise;
 };
 
 
