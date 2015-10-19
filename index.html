@@ -47,7 +47,7 @@ limitations under the License.
           </div>
           <md-content ng-show="ctrl.listState() == 'hasData'">
             <md-list>
-              <md-list-item ng-repeat="f in ctrl.files">
+              <md-list-item ng-repeat="f in ctrl.files | orderBy:'name'">
                 <p ng-click="ctrl.downloadFile(f)">{{f.name}}</p>
                 <md-menu md-position-mode="target-right target">
                   <md-button aria-label="Open file interactions menu" class="md-icon-button" ng-click="$mdOpenMenu()">
