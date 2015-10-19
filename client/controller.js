@@ -2,13 +2,13 @@
  * @license Apache-2.0
  *
  * Copyright 2015 Google Inc. All rights reserved.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,7 +32,7 @@ var filedrop = filedrop || {};
  * @constructor
  * @ngInject
  */
-filedrop.Controller = function(Files, FileDialog, $mdDialog, $mdToast, $scope, $window) {
+filedrop.Controller = function(Files, FileDialog, $mdDialog, $mdToast, $scope, $q, $window) {
   /** @private {!filedrop.Files} */
   this.filesService_ = Files;
 
@@ -48,8 +48,11 @@ filedrop.Controller = function(Files, FileDialog, $mdDialog, $mdToast, $scope, $
   /** @private {!angular.Scope} */
   this.scope_ = $scope;
 
+  /** @private {!angular.$q} */
+  this.q_ = $q;
+
   /** @private {!angular.$window} */
-  this.window_ = $window
+  this.window_ = $window;
 
   /** @export {!Array.<!Object>} */
   this.files = [];
@@ -137,14 +140,28 @@ filedrop.Controller.prototype.dropFile = function(files) {
  */
 filedrop.Controller.prototype.processUpload_ = function(files) {
   var fs = this.filesService_;
-  var f = files[0];
-  var fn = function() { return fs.upload(f); };
-  var okText = 'Uploaded ' + f.name;
-  var failText = 'Failed to upload ' + f.name;
-  return this.retriableAction_(okText, failText, fn)
-      .then(angular.bind(this, function(fobj) {
-        this.files.push(fobj);
-      }));
+
+  var toUpload = Array.prototype.slice.call(files);
+  var fn = angular.bind(this, function() {
+    var d = this.q_.defer();
+
+    fs.uploadFiles(toUpload).then(angular.bind(this, function(files) {
+      this.files.push.apply(this.files, files.uploaded);
+
+      var okText = 'Uploaded ' + files.uploaded.length + ' file(s)';
+      d.resolve({ okText: okText });
+    }), angular.bind(this, function(files) {
+      this.files.push.apply(this.files, files.uploaded);
+      toUpload = files.failed;
+
+      var failText = 'Uploaded ' + files.uploaded.length + ' file(s), ' + files.failed.length + ' failed';
+      d.reject({ failText: failText });
+    }));
+
+    return d.promise;
+  });
+
+  return this.retriableAction_(null, null, fn);
 };
 
 
@@ -198,22 +215,31 @@ filedrop.Controller.prototype.deleteFile = function(file) {
  * @private
  */
 filedrop.Controller.prototype.retriableAction_ = function(okText, failText, fn) {
-  return fn().then(angular.bind(this, function(val) {
+  return fn().then(angular.bind(this, function(response) {
+    okText = response && response.okText ? response.okText : okText;
     if (okText) {
       this.toast_.showSimple(okText);
     }
-    return val;
-  }), angular.bind(this, function(failure) {
+    return response;
+  }), angular.bind(this, function(response) {
+    failText = response && response.failText ? response.failText : failText;
     var t = this.toast_.simple()
         .content(failText)
         .action('Retry');
-    return this.toast_.show(t).then(angular.bind(this, function() {
+    return this.toast_.show(t).then(angular.bind(this, function(toastResolution) {
       // User clicked "Retry".
-      return this.retriableAction_(okText, failText, fn);
+      // NOTE Promise resolves "ok" if user clicked and true if toast times out (https://github.com/angular/material/issues/3745)
+      // Is a dialog a more appropriate component here?
+      if (toastResolution === "ok") {
+        return this.retriableAction_(okText, failText, fn);
+      } else {
+        throw response;
+      }
     }), function() {
       // Toast "failed".  This means that the toast was dismissed,
       // whether by user action or age.  Fail with original error.
-      throw failure;
+      // NOTE Not sure that a user can ever trigger this state. See note above.
+      throw response;
     });
   }));
 };
