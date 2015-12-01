@@ -23,13 +23,16 @@ var filedrop = filedrop || {};
 /**
  * Service for handling files.
  * @param {!angular.$http} $http
+ * @param {!angular.$q} $q
  * @param {!angular.$window} $window
  * @constructor
  * @ngInject
  */
-filedrop.Files = function($http, $window) {
+filedrop.Files = function($http, $window, $q) {
   /** @private {!angular.$http} */
   this.http_ = $http;
+  /** @private {!angular.$q} */
+  this.q_ = $q;
   /** @private {!Array.<string>} */
   this.permissions_ = $window['permissions'];
 };
@@ -50,15 +53,34 @@ filedrop.Files.prototype.list = function() {
 
 
 /**
- * Upload a file.
+ * Upload a file. Returned promise provides updates via XHR progress events.
  * @param {!File} file
  * @return {!angular.$q.Promise.<!Object>} the created file object
  */
 filedrop.Files.prototype.upload = function(file) {
+  var d = this.q_.defer();
+
   var url = this.getFileUrl_(file.name);
-  return this.http_.put(url, file, {
-    transformRequest: filedrop.Files.transformFile_
-  }).then(function() {
+  var xhr = new XMLHttpRequest();
+
+  xhr.upload.addEventListener('progress', function(event) {
+    d.notify(event);
+  });
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState === 4) {
+      if (xhr.status === 200 || xhr.status === 201) {
+        d.resolve(xhr);
+      } else {
+        d.reject(xhr);
+      }
+    }
+  };
+
+  xhr.open('PUT', url);
+  xhr.setRequestHeader('Content-Type', 'application/octet-stream');
+  xhr.send(file);
+
+  return d.promise.then(function() {
     return {'name': file.name, 'url': url};
   });
 };
@@ -124,19 +146,4 @@ filedrop.Files.prototype.hasPerm_ = function(name) {
     }
   }
   return false;
-};
-
-
-/**
- * Transform request data for a file body.
- *
- * @param {!File} data
- * @param {function(): Object.<string, string>} headersGetter
- * @return {!File} the data as passed in
- * @private
- */
-filedrop.Files.transformFile_ = function(data, headersGetter) {
-  var h = headersGetter();
-  h['Content-Type'] = 'application/octet-stream';
-  return data;
 };
