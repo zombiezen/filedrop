@@ -19,6 +19,7 @@ JS_SRCS=\
 	client/dropdirective.js \
 	client/filedialog.js \
 	client/files.js \
+	client/uploadmanager.js \
 	client/app.js
 JS_DEPS=\
 	third_party/angular/angular.min.js \

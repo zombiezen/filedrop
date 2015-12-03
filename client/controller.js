@@ -32,12 +32,15 @@ var filedrop = filedrop || {};
  * @constructor
  * @ngInject
  */
-filedrop.Controller = function(Files, FileDialog, $mdDialog, $mdToast, $scope, $window) {
+filedrop.Controller = function(UploadManager, Files, FileDialog, $mdDialog, $mdToast, $scope, $window) {
   /** @private {!filedrop.Files} */
   this.filesService_ = Files;
 
   /** @private {!filedrop.FileDialog} */
   this.fileDialog_ = FileDialog;
+
+  /** @private {!filedrop.UploadManager} */
+  this.uploadManager_ = UploadManager;
 
   /** @private {!md.$dialog} */
   this.dialog_ = $mdDialog;
@@ -136,14 +139,21 @@ filedrop.Controller.prototype.dropFile = function(files) {
  * @private
  */
 filedrop.Controller.prototype.processUpload_ = function(files) {
-  var fs = this.filesService_;
-  var f = files[0];
-  var fn = function() { return fs.upload(f); };
-  var okText = 'Uploaded ' + f.name;
-  var failText = 'Failed to upload ' + f.name;
-  return this.retriableAction_(okText, failText, fn)
-      .then(angular.bind(this, function(fobj) {
-        this.files.push(fobj);
+
+  return this.uploadManager_.makeUploads(files)
+      .then(angular.bind(this, function(fileObjects) {
+        if (fileObjects.length > 1) {
+          var okText = 'Uploaded ' + fileObjects.length + ' files';
+        } else {
+          var okText = 'Uploaded ' + fileObjects[0].name;
+        }
+        angular.forEach(fileObjects, function(fObj) {
+          this.files.push(fObj);
+        }, this);
+        this.toast_.showSimple(okText);
+      }), angular.bind(this, function() {
+        var failText = 'Failed to upload a file';
+        this.toast_.showSimple(failText);
       }));
 };
 
