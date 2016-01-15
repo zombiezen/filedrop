@@ -4,6 +4,8 @@ FileDrop is a small web-based file-sharing UI.  It can be used as a standalone
 server in trusted LANs, but it can optionally use [Sandstorm][sandstorm] for
 ACLs and sharing.
 
+[![Try it on Sandstorm](https://img.shields.io/badge/try-live%20demo-783189.svg)](https://demo.sandstorm.io/appdemo/nn7axgy3y8kvd0m1mtk3cwca34t916p5d7m4j1j2e874nuz3t8y0) 
+
 ## Dependencies
 
 FileDrop requires Go 1.4 to build.  Other dependencies are vendored in
