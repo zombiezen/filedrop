@@ -70,20 +70,6 @@ filedrop.UploadManager.prototype.add = function(file) {
 };
 
 /**
- * Returns promise that resolves when the given file is uploaded.
- * @param {!File} file
- * @return {!angular.$q.Promise}
- */
-filedrop.UploadManager.prototype.makeUpload = function(file) {
-  if (!file) {
-    this.log_.warn('No file provided to make upload');
-    return false;
-  }
-  var id = this.add(file);
-  return this.fetch([id]);
-};
-
-/**
  * Returns promise that resolves when the given batch of files is uploaded.
  * @param {!FileList} files
  * @return {!angular.$q.Promise}
