@@ -1,3 +1,7 @@
+# 1.0.5
+
+- Rebuild Filedrop with Sandstorm 0.166 ([issue #13](https://github.com/zombiezen/filedrop/issues/13))
+
 # 1.0.4
 
 - Added short description to metadata
