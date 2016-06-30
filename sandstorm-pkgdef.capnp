@@ -30,9 +30,9 @@ const pkgdef :Spk.PackageDefinition = (
   manifest = (
     appTitle = (defaultText = "FileDrop"),
 
-    appVersion = 6,  # Increment this for every release.
+    appVersion = 7,  # Increment this for every release.
 
-    appMarketingVersion = (defaultText = "1.0.5"),
+    appMarketingVersion = (defaultText = "1.0.6"),
     # Human-readable representation of appVersion. Should match the way you
     # identify versions of your app in documentation and marketing.
 

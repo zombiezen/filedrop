@@ -1,3 +1,7 @@
+# 1.0.6
+
+- Rebuild Filedrop with Sandstorm 0.169 ([issue #14](https://github.com/zombiezen/filedrop/issues/14))
+
 # 1.0.5
 
 - Rebuild Filedrop with Sandstorm 0.166 ([issue #13](https://github.com/zombiezen/filedrop/issues/13))
