@@ -36,6 +36,7 @@ filedrop.module
     .controller('Controller', filedrop.Controller)
     .directive('filedropDrop', filedrop.dropDirective)
     .service('FileDialog', filedrop.FileDialog)
+    .service('UploadManager', filedrop.UploadManager)
     .service('Files', filedrop.Files);
 
 /**

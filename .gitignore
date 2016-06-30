@@ -4,3 +4,5 @@ client/bundle.js
 client/compiled_js.js
 client/deps.js
 filedrop
+*.swp
+.DS_STORE
