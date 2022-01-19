@@ -1,5 +1,7 @@
 # FileDrop
 
+**This project is no longer maintained.**
+
 FileDrop is a small web-based file-sharing UI.  It can be used as a standalone
 server in trusted LANs, but it can optionally use [Sandstorm][sandstorm] for
 ACLs and sharing.
